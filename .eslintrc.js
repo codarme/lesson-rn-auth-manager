@@ -1,4 +1,4 @@
 module.exports = {
   root: true,
-  extends: 'plguin:@codar/react',
-};
+  extends: 'plugin:@codar/react',
+}

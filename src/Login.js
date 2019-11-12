@@ -1,16 +1,19 @@
 import * as React from 'react'
+import { useState } from 'react'
+import styled from 'styled-components'
+import { useFormik } from 'formik'
+
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
+  Image,
   ActivityIndicator,
 } from 'react-native'
-import styled from 'styled-components'
-import { useFormik } from 'formik'
 
 import * as api from './api'
-import { useStore } from './store'
+import { useAuth } from './auth'
 
 const Screen = styled(View)`
   flex: 1;
@@ -19,16 +22,22 @@ const Screen = styled(View)`
   flex-direction: row;
 `
 
+const Img = styled(Image)`
+  margin-bottom: 32px;
+  max-width: 300px;
+  align-self: center;
+`
+
 const LoginBox = styled(View)`
   flex: 1;
-  padding: 32px;
+  padding: 16px;
 `
 
 const Input = styled(TextInput)`
   background: #ebebeb;
-  padding: 8px;
-  margin-bottom: 12px;
   border-radius: 5px;
+  padding: 12px;
+  margin-bottom: 12px;
 `
 
 const Button = styled(TouchableOpacity)`
@@ -36,43 +45,50 @@ const Button = styled(TouchableOpacity)`
   padding: 12px;
   border-radius: 5px;
   align-items: center;
-  justify-content: center;
 `
 
-const TextButton = styled(Text)`
+const ButtonText = styled(Text)`
   color: #fff;
 `
 
 export const Login = () => {
-  const [, setStore] = useStore()
+  const [state, setState] = useState(false)
+  const [, { login }] = useAuth()
 
   const formik = useFormik({
     initialValues: {
-      username: '',
-      password: '',
+      username: 'test',
+      password: 'test',
     },
+
     onSubmit: async values => {
       try {
         const { data } = await api.login(values)
-        setStore(prev => ({
-          ...prev,
-          auth: data,
-        }))
-      } catch (error) {}
+        login(data)
+      } catch (error) {
+        setState('Login ou senha inválidos')
+      }
     },
   })
 
   return (
     <Screen>
       <LoginBox>
+        <Img source={require('./logo.png')} resizeMode="contain" />
+
+        {state && <Text>{state}</Text>}
+
         <Input
-          name="'username"
-          placeholder="Usuário"
+          name="username"
+          placeholder="Digite seu usuario"
+          value={formik.values.username}
           onChangeText={formik.handleChange('username')}
         />
+
         <Input
-          name="'password"
+          name="password"
           placeholder="Digite sua senha"
+          value={formik.values.password}
           onChangeText={formik.handleChange('password')}
           secureTextEntry
         />
@@ -81,7 +97,7 @@ export const Login = () => {
           {formik.isSubmitting ? (
             <ActivityIndicator color="#FFF" />
           ) : (
-            <TextButton>Enviar</TextButton>
+            <ButtonText>Entrar</ButtonText>
           )}
         </Button>
       </LoginBox>

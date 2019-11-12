@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { createContext, useState, useContext, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import { useAsyncStorage } from '@react-native-community/async-storage'
 
 const StoreContext = createContext([{}, () => {}])
@@ -10,19 +10,18 @@ export const useStore = () => {
 }
 
 export const StoreProvider = ({ children }) => {
-  const { setItem, getItem } = useAsyncStorage('store')
+  const { getItem, setItem } = useAsyncStorage('store')
   const [state, setState] = useState({
     rehydrated: false,
   })
 
   const rehydrate = async () => {
     const data = await getItem()
-
-    data &&
-      setState({
-        ...JSON.parse(data),
-        rehydrated: true,
-      })
+    setState(prev => ({
+      ...prev,
+      ...(data && JSON.parse(data)),
+      rehydrated: true,
+    }))
   }
 
   useEffect(() => {

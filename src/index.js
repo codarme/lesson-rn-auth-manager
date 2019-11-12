@@ -1,27 +1,24 @@
 import * as React from 'react'
-import { View, Text, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { View, Text, ActivityIndicator, Button } from 'react-native'
 import styled from 'styled-components'
 
-import { Login } from './Login'
 import { StoreProvider, useStore } from './store'
+import { useAuth } from './auth'
+
+import { Login } from './Login'
 
 const Loading = styled(ActivityIndicator)`
-  color: #fff;
   flex: 1;
+  color: #43bc70;
 `
 
 const Home = () => {
-  const [, setStore] = useStore()
+  const [, { logout }] = useAuth()
 
-  const logout = () => {
-    setStore(({ auth, ...prev }) => prev)
-  }
   return (
     <View>
       <Text>Home</Text>
-      <TouchableOpacity onPress={logout}>
-        <Text>Sair</Text>
-      </TouchableOpacity>
+      <Button title="Sair" onPress={logout} />
     </View>
   )
 }

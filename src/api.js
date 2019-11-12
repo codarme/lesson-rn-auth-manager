@@ -1,16 +1,14 @@
 export const login = credentials =>
   new Promise(resolve => {
-    setTimeout(
-      () =>
-        resolve({
-          data: {
-            token: 123456,
-            user: {
-              name: 'Bruno',
-              email: 'dev@brunobertolini.com',
-            },
+    setTimeout(() => {
+      resolve({
+        data: {
+          token: '123456',
+          user: {
+            name: 'Bruno',
+            email: 'dev@brunobertolini.com',
           },
-        }),
-      2000
-    )
+        },
+      })
+    }, 3000)
   })
